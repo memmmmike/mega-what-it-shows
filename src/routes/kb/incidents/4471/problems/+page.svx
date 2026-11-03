@@ -1,0 +1,47 @@
+---
+layout: runbook
+title: '#4471 · what it holds: three problems, three tickets'
+owner: memmmmike
+status: open
+reviewed: 2026-11-02
+signature: memmmmike
+---
+
+<script>
+  import ProblemTable from '#lib/kb/ProblemTable.svelte';
+  import Callout from '#lib/kb/Callout.svelte';
+  import RenderStamp from '#lib/kb/RenderStamp.svelte';
+</script>
+
+[#4471](/kb/incidents/4471) is marked known: one issue, one fix queued. Its reports are not one
+problem. Read by tenant, channel and what the reporter describes, they split into three, and each
+now has its own ticket.
+
+<ProblemTable ticket={4471} />
+
+<Callout kind="warn">
+The queued parser fix closes only the first row. Day-first tenants who type through the booking-v3
+hint, and the reports where a date moved by one day, stay broken after it ships.
+</Callout>
+
+## How the reports were counted
+
+- **Once per report.** The ticket export comes in overlapping pages, so a report can appear twice.
+  Counted once by id.
+- **Cause by tenant, not by tag.** Intake tags a report from the reporter's browser. The cause
+  comes from the tenant: the locale they write dates in and the booking form they run. The
+  "intake tagged" column shows how often the two disagree.
+- **A swap is not a shift.** Swapping day and month cannot move a date by one day. The reports
+  the desk read as a one-day move are a different bug, so they leave the parser count.
+
+## Why one ticket hid three
+
+#4471 was built by [decision 0001](/kb/decisions/0001-dedupe-by-subject): merge on the subject
+line, without reading the body. A subject says what the reporter saw, a wrong date, not what
+broke. Different bugs with the same symptom land in one ticket, and the count then reads as one
+bug reported many times.
+
+Before merging a date report into an open ticket, check its tenant's locale and booking form, and
+whether the date swapped or shifted.
+
+<RenderStamp {signature} />
