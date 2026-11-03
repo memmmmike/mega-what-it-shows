@@ -19,9 +19,18 @@ now has its own ticket.
 
 <ProblemTable ticket={4471} />
 
+## Outcome
+
+Engineering closed #4471 on 5 October:
+
+- **parser:** fixed, "fix(dates): parse dd/mm for eu locales". Ticket closed as completed.
+- **hint:** won't fix. The booking-v3 form is retired, so nobody types through its hint any more.
+  Ticket closed as not planned.
+- **one-day move:** not covered. Neither change moves a date by one day, so its ticket stays open.
+
 <Callout kind="warn">
-The queued parser fix closes only the first row. Day-first tenants who type through the booking-v3
-hint, and the reports where a date moved by one day, stay broken after it ships.
+#4471 is closed, but not every report in it is fixed. A one-day move is still open: merge new
+reports of it into its own ticket, not into a parser ticket.
 </Callout>
 
 ## How the reports were counted
