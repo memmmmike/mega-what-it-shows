@@ -1,5 +1,7 @@
-// What went wrong, per report: the cause by tenant (causes.ts), except where the desk read a
-// one-day move (desk-notes.json). A month/day swap cannot move a date by one day.
+// What went wrong in a ticket. The desk counts a report where its tenant files it (causes.ts) and
+// footnotes what it read differently (desk-notes.json). A month/day swap cannot move a date by one
+// day, so the one-day moves are a problem of their own, counted on their ticket and still under
+// the cause they are filed under.
 import { causeOf, type Report, type Tenant } from '#lib/kb/causes';
 
 export type Problem = 'parser' | 'hint' | 'one-day move';
@@ -11,10 +13,6 @@ export const PROBLEMS: Record<Problem, { what: string; ticket: string }> = {
   hint: { what: 'booking-v3 prints MM/DD/YYYY to day-first tenants', ticket: `${REPO}/2` },
   'one-day move': { what: 'the date moves by one day, not a swap', ticket: `${REPO}/3` },
 };
-
-export function problemOf(r: Report, t: Tenant | undefined, oneDayMove: readonly string[]): Problem | null {
-  return oneDayMove.includes(r.id) ? 'one-day move' : causeOf(r, t);
-}
 
 export type ProblemGroup = {
   problem: Problem | 'unplaced';
@@ -33,9 +31,11 @@ export function groupByProblem(
 ): ProblemGroup[] {
   const by = new Map<ProblemGroup['problem'], Report[]>();
   for (const r of reports) {
-    const p = problemOf(r, tenantOf(r), oneDayMove) ?? 'unplaced';
+    const p = causeOf(r, tenantOf(r)) ?? 'unplaced';
     by.set(p, [...(by.get(p) ?? []), r]);
   }
+  const moved = reports.filter((r) => oneDayMove.includes(r.id));
+  if (moved.length) by.set('one-day move', moved);
   return [...by.entries()]
     .map(([problem, rs]) => {
       const days = rs.map((r) => r.receivedAt.slice(0, 10)).sort();

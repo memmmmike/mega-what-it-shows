@@ -32,7 +32,8 @@ hint, and the reports where a date moved by one day, stay broken after it ships.
   comes from the tenant: the locale they write dates in and the booking form they run. The
   "intake tagged" column shows how often the two disagree.
 - **A swap is not a shift.** Swapping day and month cannot move a date by one day. The reports
-  the desk read as a one-day move are a different bug, so they leave the parser count.
+  the desk read as a one-day move are a different bug with their own ticket. As everywhere in
+  this kb, a report is also counted where its tenant files it, with a footnote.
 
 ## Why one ticket hid three
 
